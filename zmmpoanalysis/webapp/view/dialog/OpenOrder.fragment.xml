@@ -1,0 +1,53 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:html="http://www.w3.org/1999/xhtml">
+	<Dialog id="idOpenOrderDialog" contentWidth="80%" title="{AppConfig>/OrderType}" contentHeight="80%" showHeader="true"
+		class="sapUiResponsivePadding">
+		<VBox class="sapUiLargeMargin">
+			<Table items="{/results}" growing="true" class="navigation-icon">
+				<columns>
+					<Column>
+						<Text text="Purchase Order"/></Column>
+					<Column>
+						<Text text="PO Status"/></Column>
+					<Column>
+						<Text text="Line Item"/></Column>
+					<Column>
+						<Text text="Vendor"/></Column>
+					<Column>
+						<Text text="Created On"/></Column>
+					<Column>
+						<Text text="Order Reason"/></Column>
+					<Column>
+						<Text text="PO Qty"/></Column>
+					<Column>
+						<Text text="FOB"/></Column>
+					<Column>
+						<Text text="Delv Date"/></Column>
+					<Column>
+						<Text text="Site"/></Column>
+					<Column>
+						<Text text="Readiness Date"/></Column>
+				</columns>
+				<items>
+					<ColumnListItem>
+						<cells>
+							<Text text="{PurchaseOrder}"/>
+							<Text text="{PoStatus}"/>
+							<Text text="{LineItem}"/>
+							<Text text="{VendorName}"/>
+							<Text text="{ path : 'PoCreatedOn', formatter: '.formatter.getLocalTime' }"/>
+							<Text text="{OrderReason}"/>
+							<Text text="{ReleaseQty}"/>
+							<Text text="{Fob}"/>
+							<Text text="{ path : 'DelvDate', formatter: '.formatter.getLocalTime' }"/>
+							<Text text="{Site}"/>	
+							<Text text="{ path : 'ReadinessDate', formatter: '.formatter.getLocalTime' }"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</VBox>
+		<endButton>
+			<Button text="Close" press="onPreviewCancel"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

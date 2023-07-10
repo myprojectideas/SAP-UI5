@@ -1,0 +1,683 @@
+<mvc:View controllerName="zmmpoanalysis.zmmpoanalysis.controller.Main" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:l="sap.ui.layout"
+	xmlns:smartFilterBar="sap.ui.comp.smartfilterbar" xmlns:mvc="sap.ui.core.mvc" xmlns:u="sap.ui.unified"
+	xmlns:smartTable="sap.ui.comp.smarttable" xmlns:semantic="sap.f.semantic" xmlns:layout="sap.ui.layout" xmlns:core="sap.ui.core"
+	xmlns="sap.m" xmlns:f="sap.ui.layout.form">
+	<!--<core:Fragment fragmentName="zmmpoanalysis.zmmpoanalysis.view.dialog.Dialog" type="XML"/>-->
+	<l:Splitter class="sapUiSizeCompact">
+		<semantic:SemanticPage class="sapUiSizeCompact" id="masterPage" preserveHeaderStateOnScroll="true" toggleHeaderOnTitleClick="false">
+			<semantic:titleHeading>
+				<Title id="masterPageTitle" text="{i18n>title}" level="H2"/>
+			</semantic:titleHeading>
+			<semantic:headerContent>
+				<OverflowToolbar>
+					<SearchField liveChange=".onSearch" width="{AppConfig>/searchWidth}"/>
+					<ToolbarSpacer/>
+					<Button icon="sap-icon://add-filter" press="handleOpenDialog"/>
+				</OverflowToolbar>
+			</semantic:headerContent>
+			<semantic:content class="sapUiSizeCompact">
+				<SearchField liveChange=".onSearch"/>
+				<List class="sapUiSizeCompact" id="idPOTable" noDataText="No Data Available, try changing filters" headerText="Purchase Orders" growingThreshold="100" growing="true" 
+					items="{/results}">
+					<ObjectListItem title="{PoType} PO: {PurchaseOrder}" type="Navigation" press="onLineitemClicked" 
+						number="{ parts:[{path:'PoValue'},{path:'VendorCurr'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }"
+						numberUnit="{VendorCurr}">
+						<firstStatus>
+							<ObjectStatus visible="{AppConfig>/headerVisible}" text="Created By: {CreatedBy}"/>
+							<ObjectStatus visible="{AppConfig>/headerVisible}" text="Site: {Site}"/>
+						</firstStatus>
+						<ObjectAttribute text="Vendor: {SupplierName}({ path : 'Supplier', formatter: '.formatter.removeZero' })"/>
+						<ObjectAttribute text="Created on: { path : 'CreatedOn', formatter: '.formatter.getLocalTime' }" class="EmphasizedText"/>
+						<ObjectAttribute text="Delivery Date: { path : 'DelvDate', formatter: '.formatter.getLocalTime' }" class="EmphasizedText"/>
+					</ObjectListItem>
+				</List>
+			</semantic:content>
+			<semantic:layoutData>
+				<l:SplitterLayoutData size="auto"/>
+			</semantic:layoutData>
+		</semantic:SemanticPage>
+		<semantic:SemanticPage id="detailPage" showFooter="true" busy="{detailView>/busy}" busyIndicatorDelay="{detailView>/delay}">
+			<!--Title Heading-->
+			<semantic:titleHeading>
+				<Title text="PO Number: {AppConfig>/headerItem/PurchaseOrder}"/>
+			</semantic:titleHeading>
+			<!--Header Content -->
+			<semantic:headerContent>
+				<layout:HorizontalLayout allowWrapping="true">
+					<layout:VerticalLayout class="sapUiMediumMarginEnd">
+						<ObjectAttribute title="Buyer Namer" text="{AppConfig>/headerItem/BuyerName}({AppConfig>/headerItem/Buyer})"/>
+						<ObjectAttribute title="Inco Terms" text="{AppConfig>/headerItem/IncoTermDesc}({AppConfig>/headerItem/IncoTerm})"/>
+						<ObjectAttribute title="CEO Review Flag" text="{ path : 'AppConfig>/headerItem/review', formatter: '.formatter.getReviewStatus' }"/>
+					</layout:VerticalLayout>
+					<layout:VerticalLayout>
+						<ObjectAttribute title="Created by" text="{AppConfig>/headerItem/CreatedBy}"/>
+						<ObjectAttribute title="First Release Date" text="{ path : 'AppConfig>/headerItem/FirstRelDate', formatter: '.formatter.getLocalTime' }"
+							class="EmphasizedText"/>
+						<ObjectAttribute title="Review Date" text="{ path : 'AppConfig>/headerItem/reviewDate', formatter: '.formatter.getLocalTime' }"/>
+					</layout:VerticalLayout>
+				</layout:HorizontalLayout>
+			</semantic:headerContent>
+			<semantic:content>
+				<IconTabBar id="idIconTabBarMulti" expanded="{device>/isNoPhone}" class="sapUiResponsiveContentPadding" select="onSelectAppointmentItem">
+					<items>
+						<IconTabFilter icon="sap-icon://activity-items" key="Item Attributes" text="Item Attributes">
+							<content>
+								<ScrollContainer height="100%" width="100%" vertical="true" horizontal="true" focusable="true">
+									<Table width="100rem" id="idTable" items="{/results}" growing="true" fixedLayout="false" class="navigation-icon">
+										<columns>
+											<Column width="50px">
+												<Text text="Line Item"/></Column>
+											<Column width="100px">
+												<Text text="Article"/></Column>
+											<Column width="220px">
+												<Text text="Description"/></Column>
+											<Column width="100px">
+												<Text text="Site"/></Column>
+											<Column width="100px">
+												<Text text="Category"/></Column>
+											<Column width="50px">
+												<Text text="Deletion Indicator"/></Column>
+											<Column width="50px">
+												<Text text="Delivery Complete"/></Column>
+											<Column width="50px">
+												<Text text="Quantity (Unit)"/></Column>
+											<Column width="50px">
+												<Text text="Qty Conversion"/></Column>
+											<Column width="70px">
+												<Text text="Total Qty"/></Column>
+											<Column width="50px">
+												<Text text="Global TIER"/></Column>
+											<Column width="50px">
+												<Text text="Site TIER"/></Column>
+											<Column width="150px">
+												<Text text="Weekly Demand"/></Column>
+											<Column width="200px">
+												<Text text="Comment"/></Column>
+										</columns>
+										<items>
+											<ColumnListItem>
+												<cells>
+													<Text text="{ path : 'LineItem', formatter: '.formatter.removeZero' }"/>
+													<Text text="{Article}"/>
+													<Text text="{ShortText}"/>
+													<Text text="{SiteDesc}"/>
+													<Text text="{CategoryDesc}"/>
+													<core:Icon src="{ path : 'DeletionIndicator', formatter: '.formatter.customIcon' }" class="size1">
+														<core:layoutData>
+															<FlexItemData growFactor="1"/>
+														</core:layoutData>
+													</core:Icon>
+													<core:Icon src="{ path : 'DelvComplete', formatter: '.formatter.customIcon2' }" class="size1">
+														<core:layoutData>
+															<FlexItemData growFactor="1"/>
+														</core:layoutData>
+													</core:Icon>
+													<Text text="{ path : 'OrdQty', formatter: '.formatter.removedecimalZero' } {OrdUnit}"/>
+													<Text text="{QtyConversion}"/>
+													<Text text="{ parts : [{path: 'OrdQty'},{path: 'QtyConversion'}], formatter: '.formatter.calculateMultiply' } {Buom}"/>
+													<Text text="{globalTier}"/>
+													<Text text="{siteTier}"/>
+													<Text text="{ path : 'WeeklyDemand', formatter: '.formatter.formatDecimal' }"/>
+													<TextArea width="150px" height="50px" rows="1" value="{Comment}"/>
+												</cells>
+											</ColumnListItem>
+										</items>
+									</Table>
+								</ScrollContainer>
+							</content>
+						</IconTabFilter>
+						<IconTabFilter icon="sap-icon://batch-payments" key="attachments" text="Price">
+							<content>
+								<Table items="{/results}" growing="true" class="navigation-icon">
+									<columns>
+										<Column>
+											<Text text="Article"/></Column>
+										<Column width="220px">
+											<Text text="Description"/></Column>
+										<Column width="100px">
+												<Text text="Site"/></Column>
+										<Column>
+											<Text text="PO Cost"/></Column>
+										<Column>
+											<Text text="MAP (Site)"/></Column>
+										<Column>
+											<Text text="Sales Price"/></Column>
+										<Column>
+											<Text text="WholeSale Price"/></Column>
+									</columns>
+									<items>
+										<ColumnListItem>
+											<cells>
+												<Text text="{Article}"/>
+												<Text text="{ShortText}"/>
+												<Text text="{SiteDesc}"/>
+												<Text text="{ path : 'poPrice', formatter: '.formatter.currency' }"/>
+												<Text text="{ path : 'maP', formatter: '.formatter.currency' }"/>
+												<Text text="{ path : 'SalesPrice', formatter: '.formatter.currency' }"/>
+												<Text text="{ path : 'WholeSalePrice', formatter: '.formatter.currency' }"/>
+											</cells>
+										</ColumnListItem>
+									</items>
+								</Table>
+							</content>
+						</IconTabFilter>
+						<IconTabFilter icon="sap-icon://factory" key="attachments" text="Stock on Hand">
+							<content>
+								<ScrollContainer height="100%" width="100%" vertical="true" horizontal="true" focusable="true">
+									<HBox>
+										<VBox alignContent="Center" alignItems="Center" class="border">
+											<Title text=""/>
+											<Table width="50rem" items="{/results}" growing="true" class="navigation-icon">
+												<columns>
+													<Column width="120px">
+														<Text text="Article"/></Column>
+													<Column width="420px">
+														<Text text="Description"/></Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{Article}"/>
+															<Text text="{ShortText}"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</VBox>
+										<VBox alignContent="Center" alignItems="Center" class="border">
+											<Title text="CDC"/>
+											<Table width="25rem" items="{/results}" growing="true" class="navigation-icon">
+												<columns>
+													<Column>
+														<Text text="Qty (Pcs)"/></Column>
+													<Column>
+														<Text text="Cover in Days"/></Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{ path : 'CdcQty', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'CdcCoverage', formatter: '.formatter.roundNum' }"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</VBox>
+										<VBox alignContent="Center" alignItems="Center" class="border">
+											<Title text="EDC"/>
+											<Table width="25rem" items="{/results}" growing="true" class="navigation-icon">
+												<columns>
+													<Column>
+														<Text text="Qty (Pcs)"/></Column>
+													<Column>
+														<Text text="Cover in Days"/></Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{ path : 'EdcQty', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'EdcCoverage', formatter: '.formatter.roundNum' }"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</VBox>
+										<VBox alignContent="Center" alignItems="Center" class="border">
+											<Title text="Stores"/>
+											<Table width="25rem" items="{/results}" growing="true" class="navigation-icon">
+												<columns>
+													<Column>
+														<Text text="Qty (Pcs)"/></Column>
+													<Column>
+														<Text text="Cover in Days"/></Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{ path : 'TotQtyStores', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'StoresCoverage', formatter: '.formatter.roundNum' }"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</VBox>
+										<VBox alignContent="Center" alignItems="Center" class="border">
+											<Title text="Total"/>
+											<Table width="25rem" items="{/results}" growing="true" class="navigation-icon">
+												<columns>
+													<Column>
+														<Text text="Qty (Pcs)"/></Column>
+													<Column>
+														<Text text="SOH SO Date"/></Column>
+													<Column>
+														<Text text="Cover in Days"/></Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{ path : 'TotQty', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'sohSoDate', formatter: '.formatter.getLocalTime' }"/>
+															<Text text="{ path : 'TotCoverage', formatter: '.formatter.roundNum' }"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</VBox>
+									</HBox>
+								</ScrollContainer>
+							</content>
+						</IconTabFilter>
+						<IconTabFilter icon="sap-icon://order-status" key="people" text="On Order">
+							<content>
+								<ScrollContainer height="100%" width="100%" vertical="true" horizontal="true" focusable="true">
+									<Table width="100rem" items="{/results}" growing="true" class="navigation-icon">
+										<columns>
+											<Column>
+												<Text text="Article"/></Column>
+											<Column width="220px">
+												<Text text="Description"/></Column>
+											<Column width="100px">
+												<Text text="Site"/></Column>	
+											<Column>
+												<Text text="Order Reason"/></Column>
+											<Column>
+												<Text text="On Order Qty"/></Column>
+											<Column>
+												<Text text="On Order Value"/></Column>
+											<Column>
+												<Text text="OO SO Date"/></Column>
+											<Column>
+												<Text text="On Order Coverage"/></Column>
+											<Column>
+												<Text text="Action"/></Column>
+										</columns>
+										<items>
+											<ColumnListItem>
+												<cells>
+													<Text text="{Article}"/>
+													<Text text="{ShortText}"/>
+													<Text text="{SiteDesc}"/>
+													<Text text="{OrderReason}"/>
+													<Text text="{ path : 'relOpenOrdQty', formatter: '.formatter.removedecimalZero' }"/>
+													<Text text="{ path : 'relOpenOrdVal', formatter: '.formatter.currency' }"/>
+													<Text text="{ path : 'ooSoDate', formatter: '.formatter.getLocalTime' }"/>
+													<Text text="{ path : 'OnOrdCov', formatter: '.formatter.removedecimalZero' }"/>
+													<Button text="On Order" press="onViewReleasedPO"/>
+													<!--<Text text="{ path : 'notRelOpenOrdQty', formatter: '.formatter.removedecimalZero' }"/>-->
+													<!--<Text text="{ path : 'notRelOpenOrdVal', formatter: '.formatter.removedecimalZero' }"/>-->
+													<!--<Text text="{NotRelPOCvg}"/>-->
+													<!--<Button text="Under Review" press="onViewNotReleasedPO"/>-->
+												</cells>
+											</ColumnListItem>
+										</items>
+									</Table>
+								</ScrollContainer>
+							</content>
+						</IconTabFilter>
+						<IconTabFilter icon="sap-icon://check-availability" text="Order(Signature)">
+							<content>
+								<ScrollContainer height="100%" width="100%" vertical="true" horizontal="true" focusable="true">
+									<Table width="100rem" items="{/results}" growing="true" class="navigation-icon">
+										<columns>
+											<Column>
+												<Text text="Article"/></Column>
+											<Column width="220px">
+												<Text text="Description"/></Column>
+											<Column width="220px">
+												<Text text="Site"/></Column>
+											<Column>
+												<Text text="Under Review PO Qty"/></Column>
+											<Column>
+												<Text text="Under Review PO Value "/></Column>
+											<Column>
+												<Text text="CO SO Date"/></Column>
+											<Column>
+												<Text text="Stock Cover on Receiving Current Order"/></Column>
+											<!--<Column>-->
+											<!--	<Text text="Under Review PO Coverage"/></Column>-->
+											<Column>
+												<Text text="RP Type"/></Column>
+											<Column>
+												<Text text="MTS/TS"/></Column>
+											<Column>
+												<Text text="Current Site SOH"/>
+												<!--<Text text="Action"/>-->
+												</Column>
+										</columns>
+										<items>
+											<ColumnListItem>
+												<cells>
+													<Text text="{Article}"/>
+													<Text text="{ShortText}"/>
+													<Text text="{SiteDesc}"/>
+													<Text text="{ path : 'OrdSigPoQty', formatter: '.formatter.removedecimalZero' } {Buom}"/>
+													<Text text="{ path : 'OrdSigPoVal', formatter: '.formatter.currency' }"/>
+													<Text text="{ path : 'coSoDate', formatter: '.formatter.getLocalTime' }"/>
+													<Text text="{ path : 'CurrentOrdCov', formatter: '.formatter.removedecimalZero' }"/>
+													<!--<Text text="{ path : 'UnderRevCov', formatter: '.formatter.removedecimalZero' }"/>-->
+													<Text text="{RpType}"/>
+													<Text text="{ path : 'mts', formatter: '.formatter.removedecimalZero' }"/>
+													<Text text="{ path : 'CurrentSiteSoh', formatter: '.formatter.removedecimalZero' }"/>
+													<!--<Button text="Under Review" press="onViewNotReleasedPO"/>-->
+												</cells>
+											</ColumnListItem>
+										</items>
+									</Table>
+								</ScrollContainer>
+							</content>
+						</IconTabFilter>
+						<IconTabFilter icon="sap-icon://display-more" text="Coverage">
+							<content>
+								<ScrollContainer height="100%" width="100%" vertical="true" horizontal="true" focusable="true">
+									<Table items="{/results}" growing="true" class="navigation-icon">
+										<columns>
+											<Column>
+												<Text text="Article"/></Column>
+											<Column width="220px">
+												<Text text="Description"/></Column>
+											<Column width="100px">
+												<Text text="Site"/></Column>
+											<Column>
+												<Text text="Total Coverage SOH in days"/></Column>
+											<Column>
+												<Text text="Total Coverage in days (by SOH + OO PO qty)"/></Column>
+											<Column>
+												<Text text="Stock Cover on Receiving Current Order"/></Column>
+											<Column>
+												<Text text="Stock Cover on Receiving Current Order(without MTS)"/></Column>
+												
+										</columns>
+										<items>
+											<ColumnListItem>
+												<cells>
+													<Text text="{Article}"/>
+													<Text text="{ShortText}"/>
+													<Text text="{SiteDesc}"/>
+													<Text text="{ path : 'SohCovSite', formatter: '.formatter.roundNum' }"/>
+													<Text text="{ path : 'OnOrdCov', formatter: '.formatter.removedecimalZero' }"/>
+													<Text text="{ path : 'CurrentOrdCov', formatter: '.formatter.removedecimalZero' }"/>
+													<Text text="{ path : 'covWoMtsSite', formatter: '.formatter.removedecimalZero' }"/>
+												</cells>
+											</ColumnListItem>
+										</items>
+									</Table>
+								</ScrollContainer>
+							</content>
+						</IconTabFilter>
+						<IconTabFilter id="idProfitability" icon="sap-icon://loan" key="notes" text="Profitability">
+							<content>
+								<ScrollContainer height="100%" width="100%" vertical="true" horizontal="true" focusable="true">
+									<HBox>
+										<VBox alignContent="Center" alignItems="Center" class="border">
+											<Title text=""/>
+											<Table width="50rem" items="{/results}" growing="true" class="navigation-icon">
+												<columns>
+													<Column width="120px">
+														<Text text="Article"/></Column>
+													<Column width="420px">
+														<Text text="Description"/></Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{Article}"/>
+															<Text text="{ShortText}"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</VBox>
+										<VBox alignContent="Center" alignItems="Center" class="border">
+											<Title text="Total Quantity Sold"/>
+											<Table width="25rem" items="{/results}" growing="true" class="navigation-icon">
+												<columns>
+													<Column>
+														<Text text="YTD"/></Column>
+													<Column>
+														<Text text="Last Year"/></Column>
+													<Column>
+														<Text text="Last 12 Months"/></Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{ path : 'UnitsSoldYtd', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'UnitsSoldLy', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'UnitsSoldL12m', formatter: '.formatter.removedecimalZero' }"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</VBox>
+										<VBox alignContent="Center" alignItems="Center" class="border">
+											<Title text="Total Sales Value"/>
+											<Table width="25rem" items="{/results}" growing="true" class="navigation-icon">
+												<columns>
+													<Column>
+														<Text text="YTD"/></Column>
+													<Column>
+														<Text text="Last Year"/></Column>
+													<Column>
+														<Text text="Last 12 Months"/></Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{ path : 'TotSlsYtd', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'TotSlsLy', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'TotSlsL12m', formatter: '.formatter.removedecimalZero' }"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</VBox>
+										<VBox alignContent="Center" alignItems="Center" class="border">
+											<Title text="COGS"/>
+											<Table width="25rem" items="{/results}" growing="true" class="navigation-icon">
+												<columns>
+													<Column>
+														<Text text="YTD"/></Column>
+													<Column>
+														<Text text="Last Year"/></Column>
+													<Column>
+														<Text text="Last 12 Months"/></Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{ path : 'CogsYtd', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'CogsLy', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'CogsL12M', formatter: '.formatter.removedecimalZero' }"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</VBox>
+										<VBox alignContent="Center" alignItems="Center" class="border">
+											<Title text="Gross Profit Before Vendor Compensation"/>
+											<Table width="25rem" items="{/results}" growing="true" class="navigation-icon">
+												<columns>
+													<Column>
+														<Text text="YTD"/></Column>
+													<Column>
+														<Text text="Last Year"/></Column>
+													<Column>
+														<Text text="Last 12 Months"/></Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{ path : 'GpBfVisYtd', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'GpBfVisLy', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'GpBfVisL12m', formatter: '.formatter.removedecimalZero' }"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</VBox>
+										<VBox alignContent="Center" alignItems="Center" class="border">
+											<Title text="Gross Profit with Vendor Compensation"/>
+											<Table width="25rem" items="{/results}" growing="true" class="navigation-icon">
+												<columns>
+													<Column>
+														<Text text="YTD"/></Column>
+													<Column>
+														<Text text="Last Year"/></Column>
+													<Column>
+														<Text text="Last 12 Months"/></Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{ path : 'GpAfVisYtd', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'GpAfVisLy', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'GpAfVisL12m', formatter: '.formatter.removedecimalZero' }"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</VBox>
+										<VBox alignContent="Center" alignItems="Center" class="border">
+											<Title text="Vendor Compensation"/>
+											<Table width="25rem" items="{/results}" growing="true" class="navigation-icon">
+												<columns>
+													<Column>
+														<Text text="YTD"/></Column>
+													<Column>
+														<Text text="Last Year"/></Column>
+													<Column>
+														<Text text="Last 12 Months"/></Column>
+												</columns>
+												<items>
+													<ColumnListItem>
+														<cells>
+															<Text text="{ path : 'GpVisYtd', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'GpVisLy', formatter: '.formatter.removedecimalZero' }"/>
+															<Text text="{ path : 'GpVisL12m', formatter: '.formatter.removedecimalZero' }"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</VBox>
+									</HBox>
+								</ScrollContainer>
+							</content>
+						</IconTabFilter>
+						<IconTabFilter id="idShrink" icon="sap-icon://payment-approval" text="GP % Shrink">
+							<content>
+								<ScrollContainer height="100%" width="100%" vertical="true" horizontal="true" focusable="true">
+									<Table width="100rem" items="{/results}" growing="true" class="navigation-icon">
+										<columns>
+											<Column>
+												<Text text="Article"/></Column>
+											<Column width="220px">
+												<Text text="Description"/></Column>
+											<!--<VBox>-->
+											<!--<Title text="Shrink % YTD"/>-->
+											<Column>
+												<Text text="Before Shrink % YTD"/></Column>
+											<Column>
+												<Text text="After Shrink % YTD"/></Column>
+											<!--</VBox>-->
+											<Column>
+												<Text text="Before Shrink % LY"/></Column>
+											<Column>
+												<Text text="After Shrink % LY"/></Column>
+											<Column>
+												<Text text="Before Shrink % 12M"/></Column>
+											<Column>
+												<Text text="After Shrink % 12M"/></Column>
+										</columns>
+										<items>
+											<ColumnListItem>
+												<cells>
+													<Text text="{Article}"/>
+													<Text text="{ShortText}"/>
+													<Text text="{ path : 'gpBeforeShirnkYTD', formatter: '.formatter.formatDecimal' }"/>
+													<Text text="{ path : 'gpAfterShirnkYTD', formatter: '.formatter.formatDecimal' }"/>
+													<Text text="{ path : 'gpBeforeShirnkLY', formatter: '.formatter.formatDecimal' }"/>
+													<Text text="{ path : 'gpAfterShirnkLY', formatter: '.formatter.formatDecimal' }"/>
+													<Text text="{ path : 'gpBeforeShirnk12M', formatter: '.formatter.formatDecimal' }"/>
+													<Text text="{ path : 'gpAfterShirnk12M', formatter: '.formatter.formatDecimal' }"/>
+												</cells>
+											</ColumnListItem>
+										</items>
+									</Table>
+								</ScrollContainer>
+							</content>
+						</IconTabFilter>
+						<IconTabFilter icon="sap-icon://hr-approval" text="Release Strategy">
+							<content>
+								<Table id="idRSTable" items="{/results}" growing="true" class="navigation-icon">
+									<columns>
+										<Column>
+											<Text text="Release Code"/></Column>
+										<Column>
+											<Text text="Description"/></Column>
+										<Column>
+											<Text text="Release Status"/></Column>
+										<Column>
+											<Text text="Processor"/></Column>
+									</columns>
+									<items>
+										<ColumnListItem>
+											<cells>
+												<Text text="{relCode}"/>
+												<Text text="{relDesc}"/>
+												<core:Icon src="{ path : 'relStatus', formatter: '.formatter.customIcon2' }" class="size1">
+													<core:layoutData>
+														<FlexItemData growFactor="1"/>
+													</core:layoutData>
+												</core:Icon>
+												<Text text="{processor}"/>
+											</cells>
+										</ColumnListItem>
+									</items>
+								</Table>
+							</content>
+						</IconTabFilter>
+						<IconTabFilter icon="sap-icon://discussion" key="notes" text="Header Msg">
+							<Panel backgroundDesign="Transparent" headerText="Add a Header Comment">
+								<content>
+									<VBox>
+										<!--<TextArea id="idHeaderComment" value="{AppConfig>/headerItem/Comment}" cols="100" rows="2"/>-->
+										<!--<Button text="Update Comment" press="onUpdateHeaderComment"/>-->
+										<!--<Title text=""/>-->
+										<!--<List class="sapUiSizeCompact" items="{/results}" id="idCommentsTable" noDataText="No Previous Comments" headerText="Previous Comments">-->
+										<!--	<ObjectListItem title="Comment: {Comment}" type="Active">-->
+										<!--		<ObjectAttribute text="Timestamp: {CommentDate}({CommentTime})"/>-->
+										<!--		<ObjectAttribute text="Commented By: {CommnetUser}" class="EmphasizedText"/>-->
+										<!--	</ObjectListItem>-->
+										<!--</List>-->
+										<FeedInput post="onUpdateHeaderComment" value="{AppConfig>/headerItem/Comment}" id="idHeaderComment" icon="sap-icon://employee"
+											class="sapUiSmallMarginTopBottom"/>
+										<List showSeparators="Inner" items="{/results}" id="idCommentsTable">
+											<FeedListItem sender="{CommnetUser}" icon="sap-icon://employee" iconDensityAware="false"
+												timestamp="{ path : 'CommentDate', formatter: '.formatter.getLocalTime' } ({ path : 'CommentTime', formatter: '.formatter.formatTime' })"
+												text="{Comment}"/>
+										</List>
+									</VBox>
+								</content>
+							</Panel>
+						</IconTabFilter>
+					</items>
+				</IconTabBar>
+			</semantic:content>
+			<!--Custom Title Text Content-->
+			<semantic:titleCustomTextActions>
+				<Button icon="sap-icon://full-screen" press=".toggleFullScreen"/>
+				<Button icon="sap-icon://decline" text="Close" id="closeColumn" press=".onCloseDetailPress"/>
+				<Button icon="sap-icon://download" text="Download Excel" press=".onExport"/>
+			</semantic:titleCustomTextActions>
+			<semantic:footerCustomActions>
+				<Button icon="sap-icon://comment" text="Save Comments" press="onSaveItemComments"/>
+				<Button icon="sap-icon://check-availability" text="Review" press="onReviewPO"/>
+				<Button icon="sap-icon://paper-plane" type="Accept" text="Release PO" press="onReleaseView"/>
+				<Button icon="sap-icon://decline" type="Reject" text="Reject PO" press="onCancelPO"/>
+			</semantic:footerCustomActions>
+			<semantic:layoutData>
+				<l:SplitterLayoutData id="detailLayout" size="0px"/>
+			</semantic:layoutData>
+		</semantic:SemanticPage>
+	</l:Splitter>
+</mvc:View>

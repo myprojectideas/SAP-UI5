@@ -1,0 +1,87 @@
+<edmx:Edmx
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+    xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZMM_PO_ANALYSIS_SRV" xml:lang="en" sap:schema-version="1">
+            <EntityType Name="PoHeadDet" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PurchaseOrder"/>
+                </Key>
+                <Property Name="PurchaseOrder" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="CreatedOn" Type="Edm.String" MaxLength="8" sap:unicode="false" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="CreatedBy" Type="Edm.String" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Buyer" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="BuyerName" Type="Edm.String" MaxLength="18" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="Supplier" Type="Edm.String" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="SupplierName" Type="Edm.String" MaxLength="30" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="PoValue" Type="Edm.Decimal" Precision="13" Scale="2" sap:unicode="false" sap:unit="VendorCurr" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="VendorCurr" Type="Edm.String" MaxLength="5" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="IncoTerm" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="IncoTermDesc" Type="Edm.String" MaxLength="30" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="Site" Type="Edm.String" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="DelvDate" Type="Edm.String" MaxLength="8" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="Industry" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+                <Property Name="DocType" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+                <Property Name="RelStatus" Type="Edm.String" Nullable="false" MaxLength="8" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+                <Property Name="LocalSubCat" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+                <Property Name="Comment" Type="Edm.String" Nullable="false" MaxLength="50" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="NavPoItem" Relationship="ZMM_PO_ANALYSIS_SRV.PoHeader_PoItem" FromRole="FromRole_PoHeader_PoItem" ToRole="ToRole_PoHeader_PoItem"/>
+            </EntityType>
+            <EntityType Name="PoItemDet" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="PurchaseOrder"/>
+                </Key>
+                <Property Name="PurchaseOrder" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="LineItem" Type="Edm.String" Nullable="false" MaxLength="5" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="Article" Type="Edm.String" Nullable="false" MaxLength="18" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="Site" Type="Edm.String" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="ShortText" Type="Edm.String" MaxLength="40" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="OrdQty" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="OrdUnit" Type="Edm.String" MaxLength="3" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="QtyConversion" Type="Edm.Decimal" Precision="31" Scale="0" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="Comment" Type="Edm.String" MaxLength="50" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="UnitsSoldYtd" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="UnitsSoldLy" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="UnitsSoldL12m" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="TotSlsYtd" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="TotSlsLy" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="TotSlsL12m" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="CogsYtd" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="CogsLy" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="CogsL12M" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="GpYtd" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="GpLy" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="GpL12m" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="SalesPrice" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="WholeSalePrice" Type="Edm.String" MaxLength="13" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+                <Property Name="OrderReason" Type="Edm.String" MaxLength="140" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:filterable="false"/>
+            </EntityType>
+            <Association Name="PoHeader_PoItem" sap:content-version="1">
+                <End Type="ZMM_PO_ANALYSIS_SRV.PoHeadDet" Multiplicity="1" Role="FromRole_PoHeader_PoItem"/>
+                <End Type="ZMM_PO_ANALYSIS_SRV.PoItemDet" Multiplicity="*" Role="ToRole_PoHeader_PoItem"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_PoHeader_PoItem">
+                        <PropertyRef Name="PurchaseOrder"/>
+                    </Principal>
+                    <Dependent Role="ToRole_PoHeader_PoItem">
+                        <PropertyRef Name="PurchaseOrder"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="ZMM_PO_ANALYSIS_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="PoHeadDetSet" EntityType="ZMM_PO_ANALYSIS_SRV.PoHeadDet" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="POItemDetSet" EntityType="ZMM_PO_ANALYSIS_SRV.PoItemDet" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <AssociationSet Name="PoHeader_PoItemSet" Association="ZMM_PO_ANALYSIS_SRV.PoHeader_PoItem" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="PoHeadDetSet" Role="FromRole_PoHeader_PoItem"/>
+                    <End EntitySet="POItemDetSet" Role="ToRole_PoHeader_PoItem"/>
+                </AssociationSet>
+            </EntityContainer>
+            <atom:link
+                xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/ZMM_PO_ANALYSIS_SRV/$metadata"/>
+                <atom:link
+                    xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/ZMM_PO_ANALYSIS_SRV/$metadata"/>
+                </Schema>
+            </edmx:DataServices>
+        </edmx:Edmx>

@@ -1,0 +1,86 @@
+<core:FragmentDefinition class="sapUiSizeCompact" xmlns="sap.m" xmlns:core="sap.ui.core">
+	<ViewSettingsDialog confirm="handleConfirm" resetFilters="onResetFitler">
+		<filterItems>
+			<ViewSettingsCustomItem text="PO Creation Date Range" key="CreatedOn">
+				<customControl>
+					<DateRangeSelection change="handlePOCreationDate" class="sapUiSmallMargin6"
+						value="{ 'type': 'sap.ui.model.type.DateInterval', 'parts': [ { 'type': 'sap.ui.model.type.Date', 'path': 'AppConfig>/fromDateValue' }, { 'type': 'sap.ui.model.type.Date', 'path': 'AppConfig>/toDateValue' } ] }"/>
+				</customControl>
+			</ViewSettingsCustomItem>
+			<ViewSettingsCustomItem id="idVendorFilter" text="Vendor Name" key="Supplier">
+				<customControl>
+					<VBox>
+						<SearchField id="idSearchVendor" liveChange="onSearchVendor"/>
+						<Table id="idVendorFilterTable" items="{/results}" mode="SingleSelectLeft" selectionChange="onSelect" growing="true" class="navigation-icon">
+							<columns>
+								<Column>
+									<Text text="ID"/></Column>
+								<Column>
+									<Text text="Name"/></Column>
+								<Column>
+									<Text text="Country"/></Column>
+							</columns>
+							<items>
+								<ColumnListItem>
+									<cells>
+										<Text text="{LIFNR}"/>
+										<Text text="{NAME1}"/>
+										<Text text="{LAND1}"/>
+									</cells>
+								</ColumnListItem>
+							</items>
+						</Table>
+					</VBox>
+				</customControl>
+			</ViewSettingsCustomItem>
+			<!--<ViewSettingsFilterItem key="Supplier" text="Vendor Name" multiSelect="false" items="{path: 'ZMM_EKGRP_F4_SRV>/vendorSet'}">-->
+			<!--	<items>-->
+			<!--		<ViewSettingsItem key="{ZMM_EKGRP_F4_SRV>LIFNR}" text="{ZMM_EKGRP_F4_SRV>NAME1} ({ZMM_EKGRP_F4_SRV>LIFNR}) - {ZMM_EKGRP_F4_SRV>LAND1}"/>-->
+			<!--	</items>-->
+			<!--</ViewSettingsFilterItem>-->
+			<ViewSettingsCustomItem id="idCustomFilterItem3" text="PO number" key="PurchaseOrder">
+				<customControl>
+					<MultiInput class="sapUiLargeMargin" id="multiInput1" submit="getTokens" type="Number" width="70%" showValueHelp="false"/>
+				</customControl>
+			</ViewSettingsCustomItem>
+			<ViewSettingsFilterItem text="PO Release Status" key="RelStatus" multiSelect="false">
+				<items>
+					<ViewSettingsItem text="Both" key="1"/>
+					<ViewSettingsItem text="Release PO" key="2"/>
+					<ViewSettingsItem text="Not Released" key="3"/>
+				</items>
+			</ViewSettingsFilterItem>
+			<ViewSettingsFilterItem text="Import or Local" key="DocType">
+				<items>
+					<ViewSettingsItem id="idNB1" text="Import PO" key="NB1" selected="true"/>
+					<ViewSettingsItem id="idZNB1" text="Local PO" key="ZNB1" selected="true"/>
+				</items>
+			</ViewSettingsFilterItem>
+			<ViewSettingsFilterItem text="Local Sub-Category" key="LocalSubCat">
+				<items>
+					<ViewSettingsItem text="Local DC" key="LDC"/>
+					<ViewSettingsItem text="Local DSD" key="LDSD"/>
+				</items>
+			</ViewSettingsFilterItem>
+			<ViewSettingsFilterItem text="Industry Type" key="Industry">
+				<items>
+					<ViewSettingsItem text="Local" key=""/>
+					<ViewSettingsItem text="RDC" key="M002"/>
+					<ViewSettingsItem text="USRSC" key="Z001"/>
+					<ViewSettingsItem text="RDC" key="Z002"/>
+					<ViewSettingsItem text="USDS" key="Z003"/>
+					<ViewSettingsItem text="FTF" key="Z004"/>
+					<ViewSettingsItem text="Manufacturing" key="Z010"/>
+					<ViewSettingsItem text="Trading" key="Z011"/>
+					<ViewSettingsItem text="Servicing" key="Z012"/>
+					<ViewSettingsItem text="Cashier" key="Z999"/>
+				</items>
+			</ViewSettingsFilterItem>
+			<ViewSettingsFilterItem key="Buyer" text="Purchasing Group" multiSelect="false" items="{path: 'ZMM_EKGRP_F4_SRV>/PurchaseGroupSet'}">
+				<items>
+					<ViewSettingsItem key="{ZMM_EKGRP_F4_SRV>PurchGroup}" text="{ZMM_EKGRP_F4_SRV>Description} ({ZMM_EKGRP_F4_SRV>PurchGroup})"/>
+				</items>
+			</ViewSettingsFilterItem>
+		</filterItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>

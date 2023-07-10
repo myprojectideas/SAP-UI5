@@ -1,0 +1,180 @@
+{
+    "_version": "1.7.0",
+    "sap.app": {
+        "id": "zmmpoanalysis.zmmpoanalysis",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "1.0.0"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "sourceTemplate": {
+            "id": "servicecatalog.connectivityComponent",
+            "version": "0.0.0"
+        },
+        "dataSources": {
+            "ZMM_PO_ANALYSIS_SRV": {
+                "uri": "/sap/opu/odata/sap/ZMM_PO_ANALYSIS_SRV/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "2.0",
+                    "localUri": "localService/metadata.xml"
+                }
+            },
+            "ZMM_OPEN_PO_SRV": {
+                "uri": "/sap/opu/odata/sap/ZMM_OPEN_PO_SRV/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "2.0",
+                    "localUri": "localService/metadata.xml"
+                }
+            },
+            "ZMM_READ_PO_REL_MATRIX_SRV": {
+                "uri": "/sap/opu/odata/sap/ZMM_READ_PO_REL_MATRIX_SRV/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "2.0",
+                    "localUri": "localService/metadata.xml"
+                }
+            },
+            "ZMM_EKGRP_F4_SRV": {
+                "uri": "/sap/opu/odata/sap/ZMM_EKGRP_F4_SRV/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "2.0",
+                    "localUri": "localService/metadata.xml"
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        },
+        "supportedThemes": [
+            "sap_hcb",
+            "sap_belize"
+        ]
+    },
+    "sap.ui5": {
+        "rootView": {
+            "viewName": "zmmpoanalysis.zmmpoanalysis.view.App",
+            "type": "XML"
+        },
+        "dependencies": {
+            "minUI5Version": "1.30.0",
+            "libs": {
+                "sap.ui.core": {},
+                "sap.m": {},
+                "sap.ui.layout": {},
+                "sap.ushell": {},
+                "sap.collaboration": {},
+                "sap.ui.comp": {},
+                "sap.uxap": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "zmmpoanalysis.zmmpoanalysis.i18n.i18n"
+                }
+            },
+            "ZMM_PO_ANALYSIS_SRV": {
+                "type": "sap.ui.model.odata.v2.ODataModel",
+                "settings": {
+                    "defaultOperationMode": "Server",
+                    "defaultBindingMode": "OneWay",
+                    "defaultCountMode": "Request"
+                },
+                "dataSource": "ZMM_PO_ANALYSIS_SRV",
+                "preload": true
+            },
+            "ZMM_OPEN_PO_SRV": {
+                "type": "sap.ui.model.odata.v2.ODataModel",
+                "settings": {
+                    "defaultOperationMode": "Server",
+                    "defaultBindingMode": "OneWay",
+                    "defaultCountMode": "Request"
+                },
+                "dataSource": "ZMM_OPEN_PO_SRV",
+                "preload": true
+            },
+            "ZMM_READ_PO_REL_MATRIX_SRV": {
+                "type": "sap.ui.model.odata.v2.ODataModel",
+                "settings": {
+                    "defaultOperationMode": "Server",
+                    "defaultBindingMode": "OneWay",
+                    "defaultCountMode": "Request"
+                },
+                "dataSource": "ZMM_READ_PO_REL_MATRIX_SRV",
+                "preload": true
+            },
+            "ZMM_EKGRP_F4_SRV": {
+                "type": "sap.ui.model.odata.v2.ODataModel",
+                "settings": {
+                    "defaultOperationMode": "Server",
+                    "defaultBindingMode": "OneWay",
+                    "defaultCountMode": "Request"
+                },
+                "dataSource": "ZMM_EKGRP_F4_SRV",
+                "preload": true
+            }
+        },
+        "resources": {
+            "css": [
+                {
+                    "uri": "css/style.css"
+                }
+            ]
+        },
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "async": true,
+                "viewPath": "zmmpoanalysis.zmmpoanalysis.view",
+                "controlAggregation": "pages",
+                "controlId": "appID",
+                "clearControlAggregation": false
+            },
+            "routes": [
+                {
+                    "name": "Main",
+                    "pattern": "",
+                    "target": [
+                        "Main"
+                    ]
+                }
+            ],
+            "targets": {
+                "Main": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewName": "Main"
+                }
+            }
+        }
+    },
+    "sap.platform.abap": {
+        "uri": "/sap/bc/ui5_ui5/sap/zmmpoanalysis",
+        "_version": "1.1.0"
+    }
+}

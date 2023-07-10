@@ -1,0 +1,28 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:html="http://www.w3.org/1999/xhtml">
+	<Dialog id="idReleasePODialog" contentWidth="30%" title="{AppConfig>/OrderType}" contentHeight="40%" verticalScrolling="false"
+		showHeader="true" class="sapUiResponsivePadding">
+		<VBox class="sapUiLargeMargin">
+			<Title text="Release Approver"/>
+			<Select id="idReleaseCode" width="90%" showSecondaryValues="true">
+				<core:ListItem key="A2" text="Buying Head -Kshitiz"/>
+				<core:ListItem key="A3" text="Buying Head-Mr.Latif"/>
+				<core:ListItem key="F2" text="Mr. Nazem"/>
+				<core:ListItem key="R1" text="Buyer"/>
+				<core:ListItem key="R2" text="Buying Head - Rabih"/>
+				<core:ListItem key="R3" text="Buying Head -Ioan"/>
+				<core:ListItem key="R4" text="CEO"/>
+				<core:ListItem key="T2" text="Buying Head-Georgios"/>
+			</Select>
+			<!--<Title text="Release Group"/>-->
+			<!--<Select id="idReleaseGroup" width="90%" showSecondaryValues="true">-->
+			<!--	<core:ListItem text="A1" text="SACO Release Group"/>-->
+			<!--</Select>-->
+			<TextArea id="idReleaseComment" width="90%" placeholder="Enter a comment" rows="2"/>
+		</VBox>
+		<buttons>
+			<Button visible="{=${AppConfig>/OrderType} === 'PO Release' ? true : false}" text="Okay" press="onReleasePO"/>
+			<Button visible="{=${AppConfig>/OrderType} === 'Cancel PO Release' ? true : false}" text="Okay" press="onCancelReleasePO"/>
+			<Button text="Cancel" press="onReviewCancel"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>
